@@ -1,3 +1,4 @@
+# https://stackoverflow.com/questions/11906925/python-simulate-keydown
 import ctypes
 
 LONG = ctypes.c_long
@@ -43,7 +44,7 @@ def SendInput(*inputs):
 
 INPUT_MOUSE = 0
 INPUT_KEYBOARD = 1
-INPUT_HARDWARD = 2
+INPUT_HARDWARE = 2
 
 def Input(structure):
     if isinstance(structure, MOUSEINPUT):
