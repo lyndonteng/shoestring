@@ -35,3 +35,7 @@
 * input in x, y and z axis + `ENTER`
 * input angle in degrees from positive axis + `ENTER`
 * Combined line: "ucs z 90 " (Rotates x-y plane around z axis in 90deg)
+
+
+# Possible Extensions
+* Adding comments from speech to text
