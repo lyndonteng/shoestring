@@ -32,6 +32,7 @@ def main():
         s.sendall(b'width')
         time.sleep(1)
         s.sendall(b'page')
+        s.close()
 
 
 if __name__ == '__main__':
