@@ -1,7 +1,10 @@
 from pyautocad import Autocad, APoint
+import socket
+import time
+from functools import partial
 
-
-acad = Autocad()       #Connects Python to 
+#Connect python to AutoCAD
+acad = Autocad() 
 acad.prompt("Hello, Autocad from Python\n")
 #acad.doc returns ActiveDocument: Returns a Document object that represents the the document with the focus. If there are no documents open, an error occurs. 
 print (acad.doc.Name)
@@ -14,18 +17,87 @@ print (acad.doc.Name)
 #Send the command to the drawing
 # acad.doc.SendCommand(command_str)
 
-# p1 = APoint(0, 0)
-# p2 = APoint(50, 25)
-# for i in range(5):
-#     text = acad.model.AddText('Hi %s!' % i, p1, 2.5)
-#     acad.model.AddLine(p1, p2)
-#     acad.model.AddCircle(p1, 10)
-#     p1.y += 10
 
-# dp = APoint(10, 0)
-# for text in acad.iter_objects('Text'):
-#     print('text: %s at: %s' % (text.TextString, text.InsertionPoint))
-#     text.InsertionPoint = APoint(text.InsertionPoint) + dp
+HOST = '127.0.0.1'
+PORT = 65432
 
-# for obj in acad.iter_objects(['Circle', 'Line']):
-#     print(obj.ObjectName)
+
+def zoom(x):
+    command_str = 'zoom ' + str(x) + ' '
+    acad.doc.SendCommand(command_str)
+    
+
+def up(x):
+    command_str = '-pan 0,' + str(x) + '  '
+    acad.doc.SendCommand(command_str)
+    
+
+def down(x):
+    command_str = '-pan 0,-' + str(x) + '  '
+    acad.doc.SendCommand(command_str)
+
+
+def left(x):
+    command_str = '-pan -' + str(x) + ',0  '
+    acad.doc.SendCommand(command_str)
+
+
+def right(x):
+    command_str = '-pan ' + str(x) + ',0  '
+    acad.doc.SendCommand(command_str)
+    
+
+def clockwise(x):
+    command_str = 'ucs z -' + str(x) + ' plan  '
+    acad.doc.SendCommand(command_str)
+
+
+def anticlockwise(x):
+    command_str = 'ucs z ' + str(x) + ' plan  '
+    acad.doc.SendCommand(command_str)
+
+
+def zoom_fit():
+    command_str = 'zoom O all  '
+    acad.doc.SendCommand(command_str)
+
+
+def run_command(cmd, x):
+    commands = {
+        "zoom": partial(zoom, x),
+        "up": partial(up, x),
+        "down": partial(down, x),
+        "left": partial(left, x),
+        "right": partial(right, x),
+        "clockwise": partial(clockwise, x),
+        "anticlockwise": partial(anticlockwise, x),
+        "fit": zoom_fit
+    }
+    try:
+        commands[cmd]()
+    except KeyError:
+        pass
+
+
+def main():
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.bind((HOST, PORT))
+        s.listen()
+        conn, addr = s.accept()
+        print("Connection established.")
+        with conn:
+            while True:
+                data = conn.recv(1024)
+                cmds = data.decode('utf-8').rstrip().lower().split()
+                if len(cmds) == 1:
+                    cmd = cmds[0]
+                    x = None
+                else:
+                    cmd = cmds[0]
+                    x = cmds[1]
+                print(cmds)
+                run_command(cmd, x)
+
+
+if __name__ == '__main__':
+    main()
