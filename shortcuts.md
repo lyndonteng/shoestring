@@ -7,7 +7,7 @@
 * Rotate Anticlockwise: `Shift` + `Ctrl` + `-`
 * Previous Page: `Page Up`
 * Next Page: `Page Down`
-* Zoom fit to width: `Ctrl` + `2` or `3`
+* Zoom fit to width: `Ctrl` + `3`
 * Zoom fit to page: `Ctrl` + `0`
 
 # List of AutoCAD command lines
