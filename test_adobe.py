@@ -4,13 +4,12 @@ import time
 HOST = '127.0.0.1'
 PORT = 65432
 
-
 def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         s.connect((HOST, PORT))
         time.sleep(5)
-        s.sendall(b'anti the small big small big but i want right and clockwise and left')
-        # time.sleep(1)
+        s.sendall(b"hello")
+        # time.sleep(0.1)
         # s.sendall(b'out')
         # time.sleep(1)
         # s.sendall(b'up')
