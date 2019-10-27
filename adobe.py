@@ -2,9 +2,9 @@ from keyboard import *
 import socket
 import time
 
-HOST = '127.0.0.1'
+HOST = '192.168.1.1'
 PORT = 65432
-
+s
 
 def zoom_in():
     SendInput(Keyboard(VK_CONTROL), Keyboard(VK_OEM_PLUS))
