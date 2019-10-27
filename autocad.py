@@ -78,6 +78,46 @@ def run_command(cmd, x):
     except KeyError:
         pass
 
+def text_to_command(texts):
+    commands = [
+        "zoom",
+        "up",
+        "down",
+        "left",
+        "right",
+        "clockwise",
+        "anticlockwise",
+        "fit"
+    ]
+    
+    numbers = {
+        "one": 1,
+        "want": 1,
+        "two": 2,
+        "too": 2,
+        "to": 2,
+        "three": 3,
+        "tree": 3,
+        "four": 4,
+        "for": 4,
+        "five": 5,
+        "six": 6,
+        "seven": 7,
+        "eight": 8,
+        "ate": 8,
+        "nine": 9,
+        "ten": 10,
+        "tan": 10
+    }
+    for i, text in enumerate(texts):
+        if text in commands:
+            txtlist = texts[i+1:i+3]
+            x = 1
+            for number in numbers:
+                if number in txtlist:
+                    x = numbers[number]
+                    break
+            run_command(text, x)
 
 def main():
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -88,15 +128,8 @@ def main():
         with conn:
             while True:
                 data = conn.recv(1024)
-                cmds = data.decode('utf-8').rstrip().lower().split()
-                if len(cmds) == 1:
-                    cmd = cmds[0]
-                    x = None
-                else:
-                    cmd = cmds[0]
-                    x = cmds[1]
-                print(cmds)
-                run_command(cmd, x)
+                texts = data.decode('utf-8').rstrip().lower().split()
+                text_to_command(texts)
 
 
 if __name__ == '__main__':
