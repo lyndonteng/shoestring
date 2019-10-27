@@ -93,21 +93,31 @@ def text_to_command(texts):
     numbers = {
         "one": 1,
         "want": 1,
+        "1": 1,
         "two": 2,
         "too": 2,
         "to": 2,
+        "2": 2,
         "three": 3,
         "tree": 3,
+        "3": 3,
         "four": 4,
         "for": 4,
+        "4": 4,
         "five": 5,
+        "5": 5,
         "six": 6,
+        "6": 6,
         "seven": 7,
+        "7": 7,
         "eight": 8,
         "ate": 8,
+        "8": 8,
         "nine": 9,
+        "9": 9,
         "ten": 10,
-        "tan": 10
+        "tan": 10,
+        "10": 10
     }
     for i, text in enumerate(texts):
         if text in commands:
