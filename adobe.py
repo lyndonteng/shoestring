@@ -121,6 +121,7 @@ def main():
             while True:
                 data = conn.recv(1024)
                 texts = data.decode('utf-8').rstrip().lower().split()
+                print(texts)
                 text_to_command(texts)
 
 
