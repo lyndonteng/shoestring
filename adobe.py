@@ -86,25 +86,29 @@ def zoom_fit_to_page():
     SendInput(Keyboard(VK_CONTROL, KEYEVENTF_KEYUP))
 
 
-def run_command(cmd):
+def text_to_command(texts):
     commands = {
-        "in": zoom_in,
-        "out": zoom_out,
+        "big": zoom_in,
+        "small": zoom_out,
         "up": up,
         "down": down,
         "left": left,
         "right": right,
         "clockwise": clockwise,
-        "anticlockwise": anticlockwise,
+        "anti": anticlockwise,
         "previous": previous_page,
         "next": next_page,
         "width": zoom_fit_to_width,
         "page": zoom_fit_to_page
     }
-    try:
-        commands[cmd]()
-    except KeyError:
-        pass
+    
+    for i, text in enumerate(texts):
+        if text in commands:
+            try:
+                commands[text]()
+                time.sleep(1)
+            except KeyError:
+                pass
 
 
 def main():
@@ -116,9 +120,8 @@ def main():
         with conn:
             while True:
                 data = conn.recv(1024)
-                cmd = data.decode('utf-8').rstrip().lower()
-                print(cmd)
-                run_command(cmd)
+                texts = data.decode('utf-8').rstrip().lower().split()
+                text_to_command(texts)
 
 
 if __name__ == '__main__':
