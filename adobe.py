@@ -89,15 +89,23 @@ def zoom_fit_to_page():
 def text_to_command(texts):
     commands = {
         "big": zoom_in,
+        "bigger": zoom_in,
+        "expand": zoom_in,
+        "larger": zoom_in,
+        "large": zoom_in,
         "small": zoom_out,
+        "smaller": zoom_out,
         "up": up,
         "down": down,
         "left": left,
         "right": right,
         "clockwise": clockwise,
+        "anticlockwise": anticlockwise,
         "anti": anticlockwise,
         "previous": previous_page,
+        "back": previous_page,
         "next": next_page,
+        "with": zoom_fit_to_width,
         "width": zoom_fit_to_width,
         "page": zoom_fit_to_page
     }
