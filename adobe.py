@@ -2,9 +2,9 @@ from keyboard import *
 import socket
 import time
 
-HOST = '192.168.1.1'
-PORT = 65432
-s
+HOST = ''
+PORT = 13000
+
 
 def zoom_in():
     SendInput(Keyboard(VK_CONTROL), Keyboard(VK_OEM_PLUS))
@@ -120,17 +120,14 @@ def text_to_command(texts):
 
 
 def main():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
-        s.listen()
-        conn, addr = s.accept()
-        print("Connection established.")
-        with conn:
-            while True:
-                data = conn.recv(1024)
-                texts = data.decode('utf-8').rstrip().lower().split()
-                print(texts)
-                text_to_command(texts)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind((HOST, PORT))
+    print("Connection established.")
+    while True:
+        data, addr = s.recvfrom(1024)
+        texts = data.decode('utf-8').rstrip().lower().split()
+        print(texts)
+        text_to_command(texts)
 
 
 if __name__ == '__main__':
