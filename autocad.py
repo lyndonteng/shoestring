@@ -119,6 +119,7 @@ def text_to_command(texts):
         "tan": 10,
         "10": 10
     }
+    
     for i, text in enumerate(texts):
         if text in commands:
             txtlist = texts[i+1:i+3]
