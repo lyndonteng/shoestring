@@ -8,9 +8,10 @@ PORT = 13000
 
 def main():
     r = sr.Recognizer()
-    mic = sr.Microphone(device_index=0)
+    mic = sr.Microphone(device_index=2)
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     while True:
+        # print(sr.Microphone.list_microphone_names())
         with mic as source:
             r.adjust_for_ambient_noise(source, duration=3)
             r.energy_threshold = 800
@@ -18,8 +19,9 @@ def main():
             audio = r.listen(source, phrase_time_limit=10)
             print("Done")
             try:
-                _ = len(r.recognize_google(audio))
-                s.sendto(bytes(r.recognize_google(audio), 'utf-8'), (HOST, PORT))
+                text = r.recognize_google(audio)
+                print(text)
+                s.sendto(bytes(text, 'utf-8'), (HOST, PORT))
             except sr.UnknownValueError:
                 pass
 
