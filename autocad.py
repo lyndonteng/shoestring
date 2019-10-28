@@ -18,8 +18,8 @@ print (acad.doc.Name)
 # acad.doc.SendCommand(command_str)
 
 
-HOST = '127.0.0.1'
-PORT = 65432
+HOST = ''
+PORT = 13000
 
 
 def zoom(x):
@@ -48,12 +48,12 @@ def right(x):
     
 
 def clockwise(x):
-    command_str = 'ucs z -' + str(x) + ' plan  '
+    command_str = 'ucs z ' + str(x) + ' plan  '
     acad.doc.SendCommand(command_str)
 
 
 def anticlockwise(x):
-    command_str = 'ucs z ' + str(x) + ' plan  '
+    command_str = 'ucs z -' + str(x) + ' plan  '
     acad.doc.SendCommand(command_str)
 
 
@@ -64,12 +64,16 @@ def zoom_fit():
 
 def run_command(cmd, x):
     commands = {
+        "resume": partial(zoom,x),
         "zoom": partial(zoom, x),
+        "app": partial(up, x),
         "up": partial(up, x),
         "down": partial(down, x),
         "left": partial(left, x),
+        "write": partial(right, x),
         "right": partial(right, x),
         "clockwise": partial(clockwise, x),
+        "anti-clockwise": partial(anticlockwise, x),
         "anticlockwise": partial(anticlockwise, x),
         "fit": zoom_fit
     }
@@ -80,12 +84,16 @@ def run_command(cmd, x):
 
 def text_to_command(texts):
     commands = [
+        "resume",
         "zoom",
+        "app",
         "up",
         "down",
         "left",
         "right",
+        "write",
         "clockwise",
+        "anti-clockwise",
         "anticlockwise",
         "fit"
     ]
@@ -119,10 +127,22 @@ def text_to_command(texts):
         "tan": 10,
         "10": 10
     }
+
     for i, text in enumerate(texts):
         if text in commands:
             txtlist = texts[i+1:i+3]
-            x = 1
+            if text in ["clockwise", "anticlockwise", "anti-clockwise"]:
+                x = 90
+            elif text == "zoom":
+                x = 1
+            else:
+                x = 50
+            for txt in txtlist:
+                try:
+                    x = float(txt)
+                    break
+                except ValueError:
+                    continue
             for number in numbers:
                 if number in txtlist:
                     x = numbers[number]
@@ -130,16 +150,14 @@ def text_to_command(texts):
             run_command(text, x)
 
 def main():
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.bind((HOST, PORT))
-        s.listen()
-        conn, addr = s.accept()
-        print("Connection established.")
-        with conn:
-            while True:
-                data = conn.recv(1024)
-                texts = data.decode('utf-8').rstrip().lower().split()
-                text_to_command(texts)
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.bind((HOST, PORT))
+    print("Connection established.")
+    while True:
+        data, addr = s.recvfrom(1024)
+        texts = data.decode('utf-8').rstrip().lower().split()
+        print(texts)
+        text_to_command(texts)
 
 
 if __name__ == '__main__':
